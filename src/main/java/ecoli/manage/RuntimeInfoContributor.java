@@ -34,10 +34,15 @@ public class RuntimeInfoContributor implements InfoContributor {
         builder.withDetail("environment",
                 ImmutableMap.of("activeProfiles", environment.getActiveProfiles())
         );
-        builder.withDetail("runtime",
+        builder.withDetail("network",
                 ImmutableMap.builder()
                         .put("host", getSafeHostName())
                         .put("ip", getSafeIpAddres())
+                        .build()
+        );
+        builder.withDetail("runtime",
+                ImmutableMap.builder()
+                        .put("java.version", System.getProperty("java.version"))
                         .put("startDate", DATE_FORMAT.format(startDate))
                         .put("heartBeat", DATE_FORMAT.format(new Date()))
                         .put("uptime", getUptime())

@@ -1,7 +1,7 @@
 package ecoli.config;
 
 import com.google.common.base.Predicate;
-import ecoli.controller.EcoliController;
+import ecoli.controller.EcoliRestController;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -57,7 +57,7 @@ public class SwaggerConfig {
     }
 
     private String controllerPackageName() {
-        return EcoliController.class.getPackage().getName();
+        return EcoliRestController.class.getPackage().getName();
     }
 
     private Predicate<String> managementPath(String managementContextPath) {
