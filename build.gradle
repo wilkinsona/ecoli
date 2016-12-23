@@ -9,17 +9,32 @@ buildscript {
         classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
     }
 }
+plugins {
+    id 'com.gorylenko.gradle-git-properties' version '1.4.17'
+}
 
 apply plugin: 'java'
 apply plugin: 'idea'
 apply plugin: 'org.springframework.boot'
 
-jar {
-    baseName = 'ecoli'
-    version = '0.0.1-SNAPSHOT'
-}
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
+
+group = 'ecoli'
+version = '0.0.1-SNAPSHOT'
+ext.profile = project.hasProperty('profile') ? project.getProperty('profile') : 'dev' //gradlew bootRun -Pprofile=profileName
+
+bootRun {
+    jvmArgs = [
+        "-Dspring.profiles.active=$profile",
+        // "-Dserver.port=8888",
+        "-Xdebug",
+        "-Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=5000"
+    ]
+}
+springBoot  {
+    buildInfo()
+}
 
 repositories {
     mavenCentral()
@@ -29,6 +44,8 @@ dependencies {
     compile 'org.springframework.boot:spring-boot-starter-actuator'
     compile 'org.springframework.boot:spring-boot-actuator-docs'
     compile 'org.springframework.boot:spring-boot-starter-web'
+    compile 'de.codecentric:spring-boot-admin-starter-client:1.+'
+    compile 'org.jolokia:jolokia-core'
     compile 'io.springfox:springfox-swagger2:+'
     compile 'io.springfox:springfox-swagger-ui:2.+'
     compile 'org.apache.commons:commons-lang3:3.+'
