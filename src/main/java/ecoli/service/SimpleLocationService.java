@@ -1,5 +1,6 @@
 package ecoli.service;
 
+import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
 import ecoli.model.LocationResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -19,6 +20,7 @@ public class SimpleLocationService implements LocationService {
         this.restTemplate = restTemplate;
     }
 
+    @HystrixCommand
     @Override
     public LocationResponse getLocation(String ip) {
         LocationResponse response = restTemplate.getForObject(BASE_URL + "/{ip}", LocationResponse.class, ip);
