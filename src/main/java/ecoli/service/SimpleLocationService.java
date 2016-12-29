@@ -11,7 +11,7 @@ import org.springframework.web.client.RestTemplate;
  */
 @Service
 public class SimpleLocationService implements LocationService {
-    private static String BASE_URL = "http://ipinfo.io";
+    private static final String BASE_URL = "http://ipinfo.io";
 
     private RestTemplate restTemplate;
 
