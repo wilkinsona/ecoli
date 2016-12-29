@@ -27,7 +27,7 @@ public class RuntimeInfoContributor implements InfoContributor {
     private static final FastDateFormat DATE_FORMAT = ISO_8601_EXTENDED_DATETIME_TIME_ZONE_FORMAT;
 
     @Autowired private Environment environment;
-    private Date startDate = new Date();
+    private final Date startDate = new Date();
 
     @Override
     public void contribute(Info.Builder builder) {
