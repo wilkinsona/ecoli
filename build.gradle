@@ -6,7 +6,8 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+        classpath "org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}"
+        classpath 'com.bmuschko:gradle-docker-plugin:3.+'
     }
 }
 plugins {
@@ -15,14 +16,17 @@ plugins {
 
 apply plugin: 'java'
 apply plugin: 'idea'
+apply plugin: 'application'
 apply plugin: 'org.springframework.boot'
 apply plugin: 'io.spring.dependency-management'
+apply plugin: 'com.bmuschko.docker-java-application'
 
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
 group = 'ecoli'
 version = '0.0.1-SNAPSHOT'
+mainClassName = 'ecoli.EcoliApplication'
 ext.profile = project.hasProperty('profile') ? project.getProperty('profile') : 'dev' //gradlew bootRun -Pprofile=profileName
 
 bootRun {
@@ -54,7 +58,7 @@ dependencies {
     compile 'org.springframework.boot:spring-boot-devtools'
     compile 'org.springframework.data:spring-data-rest-hal-browser'
     compile 'org.springframework.cloud:spring-cloud-starter-hystrix'
-    
+
     compile 'de.codecentric:spring-boot-admin-starter-client:1.+'
     compile 'org.jolokia:jolokia-core'
     compile 'io.springfox:springfox-swagger2:+'
@@ -66,11 +70,19 @@ dependencies {
     testCompile 'org.springframework.boot:spring-boot-starter-test'
 }
 
+docker {
+    javaApplication {
+        baseImage = 'openjdk:8'
+        tag = "$project.dockerNamespace/$project.applicationName:$project.version"
+        maintainer = project.maintainer
+    }
+}
+
 task cleanAll {
     dependsOn clean, cleanIdea, cleanIdeaWorkspace
-}
-cleanAll.doLast {
-    delete 'out', 'logs'
+    doLast {
+        delete 'out', 'logs'
+    }
 }
 
 task wrapper(type: Wrapper) {
