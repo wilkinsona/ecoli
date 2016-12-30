@@ -76,6 +76,10 @@ docker {
         tag = "$project.dockerNamespace/$project.applicationName:$project.version"
         maintainer = project.maintainer
     }
+    registryCredentials {
+        username = dockerRegistryUserName
+        password = dockerRegistryPassword
+    }
 }
 
 task cleanAll {
