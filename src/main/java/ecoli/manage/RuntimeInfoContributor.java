@@ -2,7 +2,6 @@ package ecoli.manage;
 
 import com.google.common.collect.ImmutableMap;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.time.FastDateFormat;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.actuate.info.Info;
 import org.springframework.boot.actuate.info.InfoContributor;
@@ -14,8 +13,6 @@ import java.time.Duration;
 import java.time.Instant;
 import java.util.Date;
 
-import static org.apache.commons.lang3.time.DateFormatUtils.ISO_8601_EXTENDED_DATETIME_TIME_ZONE_FORMAT;
-
 /**
  * @author Jonatan Ivanov
  */
@@ -24,7 +21,6 @@ import static org.apache.commons.lang3.time.DateFormatUtils.ISO_8601_EXTENDED_DA
 public class RuntimeInfoContributor implements InfoContributor {
     private static final String DEFAULT_HOSTNAME = "unknown";
     private static final String DEFAULT_IP_ADDRESS = "unknown";
-    private static final FastDateFormat DATE_FORMAT = ISO_8601_EXTENDED_DATETIME_TIME_ZONE_FORMAT;
 
     @Autowired private Environment environment;
     private final Date startDate = new Date();
@@ -37,14 +33,14 @@ public class RuntimeInfoContributor implements InfoContributor {
         builder.withDetail("network",
                 ImmutableMap.builder()
                         .put("host", getSafeHostName())
-                        .put("ip", getSafeIpAddres())
+                        .put("ip", getSafeIpAddress())
                         .build()
         );
         builder.withDetail("runtime",
                 ImmutableMap.builder()
                         .put("java.version", System.getProperty("java.version"))
-                        .put("startDate", DATE_FORMAT.format(startDate))
-                        .put("heartBeat", DATE_FORMAT.format(new Date()))
+                        .put("startDate", startDate)
+                        .put("heartBeat", new Date())
                         .put("uptime", getUptime())
                         .build()
         );
@@ -66,7 +62,7 @@ public class RuntimeInfoContributor implements InfoContributor {
         return hostname;
     }
 
-    private String getSafeIpAddres() {
+    private String getSafeIpAddress() {
         String ip = DEFAULT_IP_ADDRESS;
         try {
             ip = InetAddress.getLocalHost().getHostAddress();
