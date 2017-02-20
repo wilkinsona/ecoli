@@ -38,9 +38,6 @@ bootRun {
 springBoot  {
     buildInfo()
 }
-processResources {
-    expand(project.properties)
-}
 
 repositories {
     mavenCentral()
@@ -52,6 +49,7 @@ dependencyManagement {
 }
 dependencies {
     compile 'org.springframework.boot:spring-boot-starter-actuator'
+    compile 'org.springframework.cloud:spring-cloud-starter-eureka'
     compile 'org.springframework.boot:spring-boot-starter-web'
     compile 'org.springframework.boot:spring-boot-starter-hateoas'
     compile 'org.springframework.boot:spring-boot-starter-thymeleaf'
@@ -60,7 +58,6 @@ dependencies {
     compile 'org.springframework.data:spring-data-rest-hal-browser'
     compile 'org.springframework.cloud:spring-cloud-starter-hystrix'
 
-    compile 'de.codecentric:spring-boot-admin-starter-client:1.+'
     compile 'org.jolokia:jolokia-core'
     compile 'io.springfox:springfox-swagger2:+'
     compile 'io.springfox:springfox-swagger-ui:2.+'
