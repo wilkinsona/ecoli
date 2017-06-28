@@ -1,17 +1,18 @@
 buildscript {
     ext {
-        springBootVersion = '1.5.2.RELEASE'
+        springBootVersion = '+'
     }
     repositories {
         mavenCentral()
     }
     dependencies {
         classpath "org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}"
-        classpath 'com.bmuschko:gradle-docker-plugin:3.+'
+        classpath 'com.bmuschko:gradle-docker-plugin:+'
     }
 }
 plugins {
     id 'com.gorylenko.gradle-git-properties' version '1.4.17'
+    id 'nebula.dependency-lock' version '4.9.4'
 }
 
 apply plugin: 'java'
@@ -44,7 +45,7 @@ repositories {
 }
 dependencyManagement {
     imports {
-        mavenBom 'org.springframework.cloud:spring-cloud-dependencies:Camden.SR6'
+        mavenBom 'org.springframework.cloud:spring-cloud-dependencies:+'
     }
 }
 dependencies {
@@ -60,8 +61,8 @@ dependencies {
 
     compile 'org.jolokia:jolokia-core'
     compile 'io.springfox:springfox-swagger2:+'
-    compile 'io.springfox:springfox-swagger-ui:2.+'
-    compile 'org.apache.commons:commons-lang3:3.+'
+    compile 'io.springfox:springfox-swagger-ui:+'
+    compile 'org.apache.commons:commons-lang3:+'
 
     compileOnly 'org.projectlombok:lombok'
 
@@ -88,6 +89,6 @@ task cleanAll {
 }
 
 task wrapper(type: Wrapper) {
-    gradleVersion = '3.4.1'
+    gradleVersion = '4.0'
     distributionType = Wrapper.DistributionType.BIN
 }
