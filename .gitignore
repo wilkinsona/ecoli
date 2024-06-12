@@ -1,8 +1,10 @@
 .gradle/
 build/
+
 logs/
-.gradletasknamecache
+
 out/
+.idea/
 *.iws
 *.iml
 *.ipr

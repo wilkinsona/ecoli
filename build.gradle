@@ -1,94 +1,47 @@
-buildscript {
-    ext {
-        springBootVersion = '+'
-    }
-    repositories {
-        mavenCentral()
-    }
-    dependencies {
-        classpath "org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}"
-        classpath 'com.bmuschko:gradle-docker-plugin:+'
-    }
-}
 plugins {
-    id 'com.gorylenko.gradle-git-properties' version '1.4.17'
-    id 'nebula.dependency-lock' version '4.9.4'
+	id 'java'
+	id 'org.springframework.boot' version '3.3.0'
+	id 'io.spring.dependency-management' version '1.1.5'
+	id 'com.gorylenko.gradle-git-properties' version '1.4.17'
 }
 
-apply plugin: 'java'
-apply plugin: 'idea'
-apply plugin: 'application'
-apply plugin: 'org.springframework.boot'
-apply plugin: 'io.spring.dependency-management'
-apply plugin: 'com.bmuschko.docker-java-application'
+group = 'org.example'
+version = '0.0.1-SNAPSHOT'
 
-sourceCompatibility = 1.8
-targetCompatibility = 1.8
-
-mainClassName = 'ecoli.EcoliApplication'
-ext.profile = project.hasProperty('profile') ? project.getProperty('profile') : 'dev' //gradlew bootRun -Pprofile=profileName
-
-bootRun {
-    jvmArgs = [
-        "-Dspring.profiles.active=$profile",
-        // "-Dserver.port=8888",
-        "-Xdebug",
-        "-Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=5000"
-    ]
+java {
+	toolchain { languageVersion = JavaLanguageVersion.of(22) }
 }
-springBoot  {
-    buildInfo()
+
+springBoot {
+	buildInfo()
 }
 
 repositories {
-    mavenCentral()
-}
-dependencyManagement {
-    imports {
-        mavenBom 'org.springframework.cloud:spring-cloud-dependencies:+'
-    }
+	mavenCentral()
 }
 dependencies {
-    compile 'org.springframework.boot:spring-boot-starter-actuator'
-    compile 'org.springframework.cloud:spring-cloud-starter-eureka'
-    compile 'org.springframework.boot:spring-boot-starter-web'
-    compile 'org.springframework.boot:spring-boot-starter-hateoas'
-    compile 'org.springframework.boot:spring-boot-starter-thymeleaf'
-    compile 'org.springframework.boot:spring-boot-actuator-docs'
-    compile 'org.springframework.boot:spring-boot-devtools'
-    compile 'org.springframework.data:spring-data-rest-hal-browser'
-    compile 'org.springframework.cloud:spring-cloud-starter-hystrix'
+	implementation 'org.springframework.boot:spring-boot-starter-actuator'
+	implementation 'org.springframework.boot:spring-boot-starter-web'
 
-    compile 'org.jolokia:jolokia-core'
-    compile 'io.springfox:springfox-swagger2:+'
-    compile 'io.springfox:springfox-swagger-ui:+'
-    compile 'org.apache.commons:commons-lang3:+'
+	implementation 'io.micrometer:micrometer-tracing-bridge-brave'
+	implementation 'io.zipkin.reporter2:zipkin-reporter-brave'
+	runtimeOnly 'io.micrometer:micrometer-registry-prometheus'
 
-    compileOnly 'org.projectlombok:lombok'
-
-    testCompile 'org.springframework.boot:spring-boot-starter-test'
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 }
 
-docker {
-    javaApplication {
-        baseImage = 'openjdk:8'
-        tag = "$project.dockerNamespace/$project.applicationName:$project.version"
-        maintainer = project.maintainer
-    }
-    registryCredentials {
-        username = dockerRegistryUserName
-        password = dockerRegistryPassword
-    }
+tasks.named('test') {
+	useJUnitPlatform()
 }
 
-task cleanAll {
-    dependsOn clean, cleanIdea, cleanIdeaWorkspace
-    doLast {
-        delete 'out', 'logs'
-    }
+tasks.register('cleanAll') {
+	dependsOn clean
+	doLast {
+		delete 'out', 'logs'
+	}
 }
 
-task wrapper(type: Wrapper) {
-    gradleVersion = '4.0'
-    distributionType = Wrapper.DistributionType.BIN
+tasks.named('wrapper') {
+	gradleVersion = '8.8'
 }
